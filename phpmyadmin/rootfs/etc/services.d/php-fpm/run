@@ -1,0 +1,18 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Home Assistant Community Add-on: phpMyAdmin
+# Runs the PHP-FPM daemon
+# ==============================================================================
+bashio::log.info "Starting PHP-FPM..."
+
+export SERVICE_HOST
+export SERVICE_PASSWORD
+export SERVICE_PORT
+export SERVICE_USERNAME
+
+SERVICE_HOST=$(bashio::services "mysql" "host")
+SERVICE_PASSWORD=$(bashio::services "mysql" "password")
+SERVICE_PORT=$(bashio::services "mysql" "port")
+SERVICE_USERNAME=$(bashio::services "mysql" "username")
+
+exec php-fpm7 --nodaemonize
