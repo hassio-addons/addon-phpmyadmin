@@ -28,7 +28,6 @@ RUN \
     \
     && sed -i "s@define('CONFIG_DIR'.*@define('CONFIG_DIR', '/etc/phpmyadmin/');@" \
         /var/www/phpmyadmin/libraries/vendor_config.php \
-    && apk del --purge .build-dependencies \
     \
     && find /var/www/ -type f -name "*.md" -depth -exec rm -f {} \; \
     && rm -f -r \
