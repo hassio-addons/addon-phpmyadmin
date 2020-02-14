@@ -15,6 +15,7 @@ if [ ! -f /data/config.secret.inc.php ]; then
 \$cfg['blowfish_secret'] = '$(tr -dc 'a-zA-Z0-9~!@#$%^&*_()+}{?></";.,[]=-' < /dev/urandom | fold -w 32 | head -n 1)';
 EOT
 fi
+chmod 640 /data/config.secret.inc.php
 
 host=$(bashio::services "mysql" "host")
 password=$(bashio::services "mysql" "password")

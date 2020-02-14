@@ -3,6 +3,7 @@
 require('/data/config.secret.inc.php');
 
 $cfg['AllowThirdPartyFraming'] = true;
+$cfg['CheckConfigurationPermissions'] = false;
 $cfg['ZeroConf'] = false;
 $cfg['UploadDir'] = '';
 $cfg['SaveDir'] = '';
