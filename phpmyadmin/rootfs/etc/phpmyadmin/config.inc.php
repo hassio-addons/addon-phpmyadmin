@@ -4,9 +4,10 @@ require('/data/config.secret.inc.php');
 
 $cfg['AllowThirdPartyFraming'] = true;
 $cfg['CheckConfigurationPermissions'] = false;
-$cfg['ZeroConf'] = false;
-$cfg['UploadDir'] = '';
 $cfg['SaveDir'] = '';
+$cfg['UploadDir'] = '';
+$cfg['VersionCheck'] = false;
+$cfg['ZeroConf'] = false;
 
 $cfg['Servers'][1]['host'] = getenv("SERVICE_HOST");
 $cfg['Servers'][1]['port'] = getenv("SERVICE_PORT");
