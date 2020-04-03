@@ -8,6 +8,7 @@ declare password
 declare port
 declare username
 declare database
+declare upload_limit
 
 if ! bashio::fs.file_exists "/data/config.secret.inc.php"; then
     cat > /data/config.secret.inc.php <<EOT
@@ -37,3 +38,11 @@ if ! bashio::var.has_value "${database}"; then
         -h "${host}" -P "${port}" \
             < /var/www/phpmyadmin/sql/create_tables.sql
 fi
+
+upload_limit="64M"
+
+if bashio::config.has_value 'upload_limit'; then
+    upload_limit=$(bashio::config "upload_limit")M
+fi
+
+sed -i "s/%%upload_limit%%/${upload_limit}/g" /etc/php7/php-fpm.d/www.conf

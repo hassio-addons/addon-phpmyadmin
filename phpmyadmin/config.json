@@ -15,6 +15,7 @@
   "hassio_role": "default",
   "options": {},
   "schema": {
-    "log_level": "list(trace|debug|info|notice|warning|error|fatal)?"
+    "log_level": "list(trace|debug|info|notice|warning|error|fatal)?",
+    "upload_limit": "int?"
   }
 }
