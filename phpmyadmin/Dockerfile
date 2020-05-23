@@ -14,6 +14,7 @@ RUN \
         php7-curl=7.3.18-r0 \
         php7-fpm=7.3.18-r0 \
         php7-gd=7.3.18-r0 \
+        php7-iconv=7.3.18-r0 \
         php7-json=7.3.18-r0 \
         php7-mbstring=7.3.18-r0 \
         php7-mysqli=7.3.18-r0 \
