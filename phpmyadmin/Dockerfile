@@ -11,17 +11,17 @@ RUN \
     apk add --no-cache \
         mariadb-client=10.5.8-r0 \
         nginx=1.18.0-r13 \
-        php7-curl=7.4.14-r0 \
-        php7-fpm=7.4.14-r0 \
-        php7-gd=7.4.14-r0 \
-        php7-iconv=7.4.14-r0 \
-        php7-json=7.4.14-r0 \
-        php7-mbstring=7.4.14-r0 \
-        php7-mysqli=7.4.14-r0 \
-        php7-opcache=7.4.14-r0 \
-        php7-session=7.4.14-r0 \
-        php7-zip=7.4.14-r0 \
-        php7=7.4.14-r0 \
+        php7-curl=7.4.15-r0 \
+        php7-fpm=7.4.15-r0 \
+        php7-gd=7.4.15-r0 \
+        php7-iconv=7.4.15-r0 \
+        php7-json=7.4.15-r0 \
+        php7-mbstring=7.4.15-r0 \
+        php7-mysqli=7.4.15-r0 \
+        php7-opcache=7.4.15-r0 \
+        php7-session=7.4.15-r0 \
+        php7-zip=7.4.15-r0 \
+        php7=7.4.15-r0 \
     \
     && mkdir /var/www/phpmyadmin \
     && curl -L -s \
