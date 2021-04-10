@@ -20,6 +20,7 @@ RUN \
         php7-mysqli=7.4.15-r0 \
         php7-opcache=7.4.15-r0 \
         php7-session=7.4.15-r0 \
+        php7-xml=7.4.15-r0 \
         php7-zip=7.4.15-r0 \
         php7=7.4.15-r0 \
     \
