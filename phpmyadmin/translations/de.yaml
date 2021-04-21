@@ -1,0 +1,6 @@
+---
+configuration:
+  log_level:
+    name: Log level
+    description: >-
+      Steuert die Ebene der Protokolldetails, die das Add-on bereitstellt.
