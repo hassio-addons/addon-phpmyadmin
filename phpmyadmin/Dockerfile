@@ -1,4 +1,4 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64:9.2.2
+ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64:10.0.0
 # hadolint ignore=DL3006
 FROM ${BUILD_FROM}
 
@@ -9,20 +9,20 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3003
 RUN \
     apk add --no-cache \
-        mariadb-client=10.5.9-r0 \
-        nginx=1.18.0-r15 \
-        php7-curl=7.4.19-r0 \
-        php7-fpm=7.4.19-r0 \
-        php7-gd=7.4.19-r0 \
-        php7-iconv=7.4.19-r0 \
-        php7-json=7.4.19-r0 \
-        php7-mbstring=7.4.19-r0 \
-        php7-mysqli=7.4.19-r0 \
-        php7-opcache=7.4.19-r0 \
-        php7-session=7.4.19-r0 \
-        php7-xml=7.4.19-r0 \
-        php7-zip=7.4.19-r0 \
-        php7=7.4.19-r0 \
+        mariadb-client=10.5.11-r0 \
+        nginx=1.20.1-r3 \
+        php7-curl=7.4.20-r0 \
+        php7-fpm=7.4.20-r0 \
+        php7-gd=7.4.20-r0 \
+        php7-iconv=7.4.20-r0 \
+        php7-json=7.4.20-r0 \
+        php7-mbstring=7.4.20-r0 \
+        php7-mysqli=7.4.20-r0 \
+        php7-opcache=7.4.20-r0 \
+        php7-session=7.4.20-r0 \
+        php7-xml=7.4.20-r0 \
+        php7-zip=7.4.20-r0 \
+        php7=7.4.20-r0 \
     \
     && mkdir /var/www/phpmyadmin \
     && curl -L -s \
