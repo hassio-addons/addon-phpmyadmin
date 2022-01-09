@@ -34,6 +34,7 @@ log_level: info
 
 By default the size limit for uploads (for operations such as imports) is set to
 64MB.  This can be increased with this option, for example `100` would be 100MB.
+
 ### Option: `log_level`
 
 The `log_level` option controls the level of log output by the addon and can
