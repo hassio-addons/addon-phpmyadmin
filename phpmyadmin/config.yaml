@@ -19,3 +19,4 @@ services:
 hassio_api: true
 schema:
   log_level: list(trace|debug|info|notice|warning|error|fatal)?
+  upload_limit: int?
