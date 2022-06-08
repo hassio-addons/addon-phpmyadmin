@@ -18,6 +18,7 @@ RUN \
         php8-mbstring=8.0.19-r1 \
         php8-mysqli=8.0.19-r1 \
         php8-opcache=8.0.19-r1 \
+        php8-openssl=8.0.19-r1 \
         php8-session=8.0.19-r1 \
         php8-xml=8.0.19-r1 \
         php8-zip=8.0.19-r1 \
@@ -25,10 +26,10 @@ RUN \
     \
     && mkdir /var/www/phpmyadmin \
     && curl -L -s \
-        "https://files.phpmyadmin.net/phpMyAdmin/5.1.3/phpMyAdmin-5.1.3-all-languages.tar.gz" \
+        "https://files.phpmyadmin.net/phpMyAdmin/5.2.0/phpMyAdmin-5.2.0-all-languages.tar.gz" \
         | tar zxvf - --strip 1 -C /var/www/phpmyadmin \
     \
-    && sed -i "s@define('CONFIG_DIR'.*@define('CONFIG_DIR', '/etc/phpmyadmin/');@" \
+    && sed -i "s@'configFile' =>.*@'configFile' => '/etc/phpmyadmin/config.inc.php',@" \
         /var/www/phpmyadmin/libraries/vendor_config.php \
     \
     && find /var/www/ -type f -name "*.md" -depth -exec rm -f {} \; \
