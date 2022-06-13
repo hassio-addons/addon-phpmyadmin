@@ -11,18 +11,18 @@ RUN \
     apk add --no-cache \
         mariadb-client=10.6.8-r0 \
         nginx=1.22.0-r0 \
-        php8-curl=8.0.19-r1 \
-        php8-fpm=8.0.19-r1 \
-        php8-gd=8.0.19-r1 \
-        php8-iconv=8.0.19-r1 \
-        php8-mbstring=8.0.19-r1 \
-        php8-mysqli=8.0.19-r1 \
-        php8-opcache=8.0.19-r1 \
-        php8-openssl=8.0.19-r1 \
-        php8-session=8.0.19-r1 \
-        php8-xml=8.0.19-r1 \
-        php8-zip=8.0.19-r1 \
-        php8=8.0.19-r1 \
+        php8-curl=8.0.20-r0 \
+        php8-fpm=8.0.20-r0 \
+        php8-gd=8.0.20-r0 \
+        php8-iconv=8.0.20-r0 \
+        php8-mbstring=8.0.20-r0 \
+        php8-mysqli=8.0.20-r0 \
+        php8-opcache=8.0.20-r0 \
+        php8-openssl=8.0.20-r0 \
+        php8-session=8.0.20-r0 \
+        php8-xml=8.0.20-r0 \
+        php8-zip=8.0.20-r0 \
+        php8=8.0.20-r0 \
     \
     && mkdir /var/www/phpmyadmin \
     && curl -L -s \
