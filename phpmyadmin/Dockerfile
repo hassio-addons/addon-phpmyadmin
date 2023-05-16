@@ -1,4 +1,4 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/base:13.2.2
+ARG BUILD_FROM=ghcr.io/hassio-addons/base:14.0.0
 # hadolint ignore=DL3006
 FROM ${BUILD_FROM}
 
@@ -9,20 +9,20 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3003
 RUN \
     apk add --no-cache \
-        mariadb-client=10.6.12-r0 \
-        nginx=1.22.1-r0 \
-        php81-curl=8.1.18-r0 \
-        php81-fpm=8.1.18-r0 \
-        php81-gd=8.1.18-r0 \
-        php81-iconv=8.1.18-r0 \
-        php81-mbstring=8.1.18-r0 \
-        php81-mysqli=8.1.18-r0 \
-        php81-opcache=8.1.18-r0 \
-        php81-openssl=8.1.18-r0 \
-        php81-session=8.1.18-r0 \
-        php81-xml=8.1.18-r0 \
-        php81-zip=8.1.18-r0 \
-        php81=8.1.18-r0 \
+        mariadb-client=10.11.3-r0 \
+        nginx=1.24.0-r3 \
+        php81-curl=8.1.19-r2 \
+        php81-fpm=8.1.19-r2 \
+        php81-gd=8.1.19-r2 \
+        php81-iconv=8.1.19-r2 \
+        php81-mbstring=8.1.19-r2 \
+        php81-mysqli=8.1.19-r2 \
+        php81-opcache=8.1.19-r2 \
+        php81-openssl=8.1.19-r2 \
+        php81-session=8.1.19-r2 \
+        php81-xml=8.1.19-r2 \
+        php81-zip=8.1.19-r2 \
+        php81=8.1.19-r2 \
     \
     && mkdir /var/www/phpmyadmin \
     && curl -L -s \
