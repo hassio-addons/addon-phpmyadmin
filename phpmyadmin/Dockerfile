@@ -1,4 +1,4 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/base:14.3.3
+ARG BUILD_FROM=ghcr.io/hassio-addons/base:15.0.0
 # hadolint ignore=DL3006
 FROM ${BUILD_FROM}
 
@@ -9,8 +9,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3003
 RUN \
     apk add --no-cache \
-        mariadb-client=10.11.5-r0 \
-        nginx=1.24.0-r7 \
+        mariadb-client=10.11.5-r3 \
+        nginx=1.24.0-r14 \
         php81-curl=8.1.26-r0 \
         php81-fpm=8.1.26-r0 \
         php81-gd=8.1.26-r0 \
