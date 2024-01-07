@@ -4,6 +4,7 @@ require('/data/config.secret.inc.php');
 
 $cfg['AllowThirdPartyFraming'] = true;
 $cfg['CheckConfigurationPermissions'] = false;
+$cfg['ExecTimeLimit'] = 3600;
 $cfg['SaveDir'] = '';
 $cfg['TempDir'] = sys_get_temp_dir();
 $cfg['UploadDir'] = '';
