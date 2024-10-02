@@ -21,4 +21,4 @@ if bashio::config.has_value 'upload_limit' ; then
     UPLOAD_LIMIT=$(bashio::config 'upload_limit')M
 fi
 
-exec php-fpm81 --nodaemonize
+exec php-fpm82 --nodaemonize
