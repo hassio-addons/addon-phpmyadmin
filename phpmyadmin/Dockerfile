@@ -26,7 +26,7 @@ RUN \
     \
     && mkdir /var/www/phpmyadmin \
     && curl -L -s \
-        "https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.tar.gz" \
+        "https://files.phpmyadmin.net/phpMyAdmin/5.2.3/phpMyAdmin-5.2.3-all-languages.tar.gz" \
         | tar zxvf - --strip 1 -C /var/www/phpmyadmin \
     \
     && sed -i "s@'configFile' =>.*@'configFile' => '/etc/phpmyadmin/config.inc.php',@" \
