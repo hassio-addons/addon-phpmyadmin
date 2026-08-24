@@ -9,6 +9,67 @@ declare password
 declare port
 declare username
 declare database
+declare deadline
+declare probe_error
+
+# The MariaDB app registers itself as the provider of the mysql service while it
+# starts, and only accepts connections once it has finished starting. Both can
+# lag behind this app starting, so wait for them instead of giving up on the
+# first attempt.
+readonly WAIT_TIMEOUT=300
+readonly WAIT_INTERVAL=5
+
+# A server can accept the connection and never finish the MySQL handshake, and
+# one that does authenticate can still go quiet before answering the query.
+# --connect-timeout only covers the first of those, so every probe also runs
+# under an external deadline. The grace between the two leaves the client room
+# to report its own error instead of being killed before it can.
+readonly PROBE_CONNECT_TIMEOUT=10
+readonly PROBE_DEADLINE=15
+
+# ==============================================================================
+# Checks if the mysql service is registered with the Supervisor, quietly.
+#
+# bashio logs to ${LOG_FD} rather than to stderr, so the error it raises on
+# every miss is muted through that descriptor. The first check is deliberately
+# made without this helper, so the actual reason is reported once.
+# ==============================================================================
+mysql_service_available() {
+    (
+        # shellcheck disable=SC2034  # bashio reads LOG_FD, shellcheck cannot see it
+        exec {LOG_FD}>/dev/null
+        bashio::services.available "mysql"
+    ) > /dev/null 2>&1
+}
+
+# ==============================================================================
+# Checks if the MariaDB server accepts connections and answers a query.
+#
+# Keeps the client error in ${probe_error} so a failure that is never going to
+# resolve itself, a rejected password for example, stays visible instead of
+# being reported as a plain timeout.
+# ==============================================================================
+mariadb_reachable() {
+    local status=0
+
+    probe_error=$(
+        timeout "${PROBE_DEADLINE}" \
+            mariadb \
+                -u "${username}" -p"${password}" \
+                -h "${host}" -P "${port}" \
+                --connect-timeout="${PROBE_CONNECT_TIMEOUT}" \
+                --skip-ssl \
+                -e "SELECT 1;" 2>&1 > /dev/null
+    ) || status=$?
+
+    # 124 comes from GNU timeout, 143 is the SIGTERM the BusyBox one sends.
+    # Either way the client was killed before it could report anything itself.
+    if [[ "${status}" -eq 124 ]] || [[ "${status}" -eq 143 ]]; then
+        probe_error="No response from the server within ${PROBE_DEADLINE} seconds"
+    fi
+
+    return "${status}"
+}
 
 if ! bashio::fs.file_exists "/data/config.secret.inc.php"; then
     cat > /data/config.secret.inc.php <<EOT
@@ -18,10 +79,39 @@ EOT
 fi
 chmod 644 /data/config.secret.inc.php
 
+if ! bashio::services.available "mysql"; then
+    bashio::log.notice "Waiting for the MariaDB service to become available..."
+    deadline=$((SECONDS + WAIT_TIMEOUT))
+    until mysql_service_available; do
+        if [[ "${SECONDS}" -ge "${deadline}" ]]; then
+            bashio::exit.nok \
+                "The MariaDB service is not available." \
+                "Please make sure the official MariaDB app is installed and" \
+                "running, and then restart this app."
+        fi
+        sleep "${WAIT_INTERVAL}"
+    done
+fi
+
 host=$(bashio::services "mysql" "host")
 password=$(bashio::services "mysql" "password")
 port=$(bashio::services "mysql" "port")
 username=$(bashio::services "mysql" "username")
+
+if ! mariadb_reachable; then
+    bashio::log.notice "MariaDB is not reachable yet: ${probe_error}"
+    bashio::log.notice "Waiting for MariaDB to accept connections..."
+    deadline=$((SECONDS + WAIT_TIMEOUT))
+    until mariadb_reachable; do
+        if [[ "${SECONDS}" -ge "${deadline}" ]]; then
+            bashio::log.error "${probe_error}"
+            bashio::exit.nok \
+                "Could not connect to the MariaDB server at ${host}:${port}." \
+                "Please make sure the official MariaDB app is running."
+        fi
+        sleep "${WAIT_INTERVAL}"
+    done
+fi
 
 database=$(\
     mariadb \
