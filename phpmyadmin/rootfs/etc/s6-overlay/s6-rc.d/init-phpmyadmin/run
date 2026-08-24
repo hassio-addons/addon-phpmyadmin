@@ -19,10 +19,13 @@ declare probe_error
 readonly WAIT_TIMEOUT=300
 readonly WAIT_INTERVAL=5
 
-# A server can accept the connection and then never complete the MySQL
-# handshake, which blocks the client forever by default. Bound every probe so a
-# single stalled attempt cannot outlive the deadline below.
-readonly PROBE_TIMEOUT=10
+# A server can accept the connection and never finish the MySQL handshake, and
+# one that does authenticate can still go quiet before answering the query.
+# --connect-timeout only covers the first of those, so every probe also runs
+# under an external deadline. The grace between the two leaves the client room
+# to report its own error instead of being killed before it can.
+readonly PROBE_CONNECT_TIMEOUT=10
+readonly PROBE_DEADLINE=15
 
 # ==============================================================================
 # Checks if the mysql service is registered with the Supervisor, quietly.
@@ -40,21 +43,32 @@ mysql_service_available() {
 }
 
 # ==============================================================================
-# Checks if the MariaDB server accepts connections.
+# Checks if the MariaDB server accepts connections and answers a query.
 #
 # Keeps the client error in ${probe_error} so a failure that is never going to
 # resolve itself, a rejected password for example, stays visible instead of
 # being reported as a plain timeout.
 # ==============================================================================
 mariadb_reachable() {
+    local status=0
+
     probe_error=$(
-        mariadb \
-            -u "${username}" -p"${password}" \
-            -h "${host}" -P "${port}" \
-            --connect-timeout="${PROBE_TIMEOUT}" \
-            --skip-ssl \
-            -e "SELECT 1;" 2>&1 > /dev/null
-    )
+        timeout "${PROBE_DEADLINE}" \
+            mariadb \
+                -u "${username}" -p"${password}" \
+                -h "${host}" -P "${port}" \
+                --connect-timeout="${PROBE_CONNECT_TIMEOUT}" \
+                --skip-ssl \
+                -e "SELECT 1;" 2>&1 > /dev/null
+    ) || status=$?
+
+    # 124 comes from GNU timeout, 143 is the SIGTERM the BusyBox one sends.
+    # Either way the client was killed before it could report anything itself.
+    if [[ "${status}" -eq 124 ]] || [[ "${status}" -eq 143 ]]; then
+        probe_error="No response from the server within ${PROBE_DEADLINE} seconds"
+    fi
+
+    return "${status}"
 }
 
 if ! bashio::fs.file_exists "/data/config.secret.inc.php"; then
