@@ -9,6 +9,39 @@ declare password
 declare port
 declare username
 declare database
+declare waited
+
+# The MariaDB app registers itself as the provider of the mysql service while it
+# starts, and only accepts connections once it has finished starting. Both can
+# lag behind this app starting, so wait for them instead of giving up on the
+# first attempt.
+readonly WAIT_TIMEOUT=300
+readonly WAIT_INTERVAL=5
+
+# ==============================================================================
+# Checks if the mysql service is registered with the Supervisor.
+#
+# bashio logs to ${LOG_FD} rather than to stderr, so the error it raises on
+# every miss is muted through that descriptor to keep the wait loop readable.
+# ==============================================================================
+mysql_service_available() {
+    (
+        # shellcheck disable=SC2034  # bashio reads LOG_FD, shellcheck cannot see it
+        exec {LOG_FD}>/dev/null
+        bashio::services.available "mysql"
+    ) > /dev/null 2>&1
+}
+
+# ==============================================================================
+# Checks if the MariaDB server accepts connections.
+# ==============================================================================
+mariadb_reachable() {
+    mariadb \
+        -u "${username}" -p"${password}" \
+        -h "${host}" -P "${port}" \
+        --skip-ssl \
+        -e "SELECT 1;" > /dev/null 2>&1
+}
 
 if ! bashio::fs.file_exists "/data/config.secret.inc.php"; then
     cat > /data/config.secret.inc.php <<EOT
@@ -18,10 +51,39 @@ EOT
 fi
 chmod 644 /data/config.secret.inc.php
 
+if ! mysql_service_available; then
+    bashio::log.notice "Waiting for the MariaDB service to become available..."
+    waited=0
+    until mysql_service_available; do
+        if [[ "${waited}" -ge "${WAIT_TIMEOUT}" ]]; then
+            bashio::exit.nok \
+                "The MariaDB service is not available." \
+                "Please make sure the official MariaDB app is installed and" \
+                "running, and then restart this app."
+        fi
+        sleep "${WAIT_INTERVAL}"
+        waited=$((waited + WAIT_INTERVAL))
+    done
+fi
+
 host=$(bashio::services "mysql" "host")
 password=$(bashio::services "mysql" "password")
 port=$(bashio::services "mysql" "port")
 username=$(bashio::services "mysql" "username")
+
+if ! mariadb_reachable; then
+    bashio::log.notice "Waiting for MariaDB to accept connections..."
+    waited=0
+    until mariadb_reachable; do
+        if [[ "${waited}" -ge "${WAIT_TIMEOUT}" ]]; then
+            bashio::exit.nok \
+                "Could not connect to the MariaDB server at ${host}:${port}." \
+                "Please make sure the official MariaDB app is running."
+        fi
+        sleep "${WAIT_INTERVAL}"
+        waited=$((waited + WAIT_INTERVAL))
+    done
+fi
 
 database=$(\
     mariadb \
