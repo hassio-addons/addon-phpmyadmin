@@ -11,18 +11,18 @@ RUN \
     apk add --no-cache \
         mariadb-client=11.8.8-r0 \
         nginx=1.30.4-r1 \
-        php84-curl=8.4.24-r0 \
-        php84-fpm=8.4.24-r0 \
-        php84-gd=8.4.24-r0 \
-        php84-iconv=8.4.24-r0 \
-        php84-mbstring=8.4.24-r0 \
-        php84-mysqli=8.4.24-r0 \
-        php84-opcache=8.4.24-r0 \
-        php84-openssl=8.4.24-r0 \
-        php84-session=8.4.24-r0 \
-        php84-xml=8.4.24-r0 \
-        php84-zip=8.4.24-r0 \
-        php84=8.4.24-r0 \
+        php84-curl=8.4.25-r0 \
+        php84-fpm=8.4.25-r0 \
+        php84-gd=8.4.25-r0 \
+        php84-iconv=8.4.25-r0 \
+        php84-mbstring=8.4.25-r0 \
+        php84-mysqli=8.4.25-r0 \
+        php84-opcache=8.4.25-r0 \
+        php84-openssl=8.4.25-r0 \
+        php84-session=8.4.25-r0 \
+        php84-xml=8.4.25-r0 \
+        php84-zip=8.4.25-r0 \
+        php84=8.4.25-r0 \
     \
     && mkdir /var/www/phpmyadmin \
     && curl -L -s \
